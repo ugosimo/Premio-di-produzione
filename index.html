@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Premio di produzione: Cash o Welfare?</title>
+<style>
+:root{
+  --bg:#edf3f1; --surface:#ffffff; --ink:#10282b; --muted:#587073; --line:#d6e1de; --band:#0b2a2d;
+  --cash:#d99a1e; --cash-soft:#f6ead2; --wel:#0f7b6c; --wel-soft:#d6efea; --warn:#a4380f; --warn-soft:#fbe6dd;
+  --font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1517; --surface:#142427; --ink:#e8f1ef; --muted:#93aaa8; --line:#27393c; --band:#06100f;
+  --cash:#e3a73f; --cash-soft:#3a2e14; --wel:#43c2ae; --wel-soft:#10372f; --warn:#f08a5d; --warn-soft:#3e2013;}}
+:root[data-theme="dark"]{
+  --bg:#0a1517; --surface:#142427; --ink:#e8f1ef; --muted:#93aaa8; --line:#27393c; --band:#06100f;
+  --cash:#e3a73f; --cash-soft:#3a2e14; --wel:#43c2ae; --wel-soft:#10372f; --warn:#f08a5d; --warn-soft:#3e2013;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(var(--band) 0 250px,var(--bg) 250px);background-repeat:no-repeat;background-color:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.45;-webkit-text-size-adjust:100%}
+main{max-width:520px;margin:0 auto;padding:28px 16px 40px}
+h1{font-size:clamp(1.9rem,7vw,2.6rem);line-height:1.05;margin:6px 0 24px;font-weight:800;letter-spacing:-.025em;color:#fff}
+.sub{color:#a9c4c1;margin:0 0 22px;font-size:1rem;max-width:34ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.calc>.panel:first-child{border-radius:22px;padding:22px;box-shadow:0 18px 40px -18px rgba(0,0,0,.45);border-color:transparent}
+label{display:block;font-weight:700;font-size:.95rem;margin-bottom:8px}
+.field{position:relative}
+.field input[type=number]{width:100%;font:inherit;font-size:2.1rem;font-weight:800;letter-spacing:-.02em;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 48px 12px 16px}
+.field input:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--wel);outline-offset:2px}
+.field span{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:800;font-size:1.2rem}
+#premio::placeholder{font-size:1.15rem;font-weight:600;letter-spacing:0;color:var(--muted);opacity:.8}
+.hint{color:var(--muted);font-size:.85rem;margin:8px 0 0}
+.rule{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--wel-soft);border-left:6px solid var(--wel);font-size:.95rem}
+.rule strong{font-size:1.02rem}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:16px;padding:4px;background:var(--bg);border-radius:999px}
+.seg button{font:inherit;font-weight:700;font-size:.92rem;padding:11px 8px;border-radius:999px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--wel);color:#fff}
+.verdict{border-radius:22px;padding:24px 22px;margin-bottom:14px;background:var(--wel);color:#fff}
+.verdict.cash{background:var(--cash);color:#1d1400}
+.verdict.even{background:var(--muted);color:#fff}
+.verdict p{margin:0;font-size:1rem;font-weight:500}
+.verdict .big{font-size:clamp(3.2rem,15vw,4.6rem);font-weight:800;line-height:1;letter-spacing:-.04em;margin:8px 0 10px;font-variant-numeric:tabular-nums}
+.bars{display:grid;gap:16px}
+.bar .row{display:flex;justify-content:space-between;font-weight:700;margin-bottom:6px}
+.bar .track{height:22px;background:var(--bg);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;transition:width .35s ease}
+.fill.c{background:var(--cash)} .fill.w{background:var(--wel)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+caption{text-align:left;font-weight:800;font-size:1.1rem;padding-bottom:8px;letter-spacing:-.01em}
+td{padding:8px 0;border-top:1px dashed var(--line)}
+td:last-child{text-align:right;font-weight:600}
+tr.tot td{font-weight:800;font-size:1.05rem;border-top:2px solid var(--ink)}
+.neg{color:var(--warn)}
+.note{border-radius:14px;padding:14px 16px;font-size:.92rem;background:var(--wel-soft);margin-bottom:14px}
+.note.warn{background:var(--warn-soft);color:var(--warn);font-weight:500;border-left:6px solid var(--warn)}
+.exc-label{font-size:.85rem;font-weight:800}
+.exc-big{font-size:2.6rem;font-weight:800;line-height:1.05;letter-spacing:-.03em;margin:2px 0 8px;font-variant-numeric:tabular-nums}
+details{margin-bottom:14px}
+summary{cursor:pointer;font-weight:700;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+details[open] summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.params{background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 16px 16px;padding:14px 18px;display:grid;gap:14px}
+.params .field input{font-size:1.1rem;padding:9px 40px 9px 12px;border-radius:10px;font-weight:700}
+.params .field span{font-size:1rem}
+.foot{color:var(--muted);font-size:.8rem;margin-top:14px}
+.foot a{color:var(--wel);font-weight:700;font-size:1.15rem;text-underline-offset:3px;display:inline-block;margin-top:8px;padding:6px 0}
+.erog{background:var(--band);border:0;border-radius:24px;color:#e8f1ef;padding:28px 26px}
+.er-title{font-weight:800;font-size:1.9rem;line-height:1.1;letter-spacing:-.025em;margin-bottom:16px;color:#fff}
+.er{display:grid;grid-template-columns:minmax(0,1fr) 150px 42px;gap:10px;align-items:center;padding:14px 0;border-top:1px dashed rgba(255,255,255,.22)}
+.er input{width:100%;font:inherit;font-size:1.35rem;font-weight:700;color:#fff;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 14px;min-width:0}
+.er input:focus-visible,.er button:focus-visible,.er-add:focus-visible{outline:3px solid #7fe0cf;outline-offset:2px}
+.er .amt{position:relative}
+.er .amt input{padding-right:34px;text-align:right;font-variant-numeric:tabular-nums}
+.er .amt span{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#a9c4c1;font-weight:700;font-size:1.15rem;pointer-events:none}
+.er .tag{display:inline-block;font-size:.9rem;font-weight:800;color:var(--band);background:#7fe0cf;border-radius:999px;padding:2px 12px;margin-bottom:7px}
+.er .del{font:inherit;font-weight:800;width:42px;height:42px;font-size:1.3rem;border-radius:50%;border:2px solid rgba(255,255,255,.2);background:transparent;color:#b6cbc8;cursor:pointer;padding:0}
+.er-add{margin-top:6px;width:100%;font:inherit;font-weight:700;padding:14px;font-size:1.1rem;border-radius:999px;border:2px dashed #7fe0cf;background:transparent;color:#7fe0cf;cursor:pointer}
+@media (min-width:860px){
+  body{background:linear-gradient(var(--band) 0 270px,var(--bg) 270px)}
+  main{max-width:980px;padding-top:44px}
+  .layout{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:24px;align-items:start}
+  .erog{position:sticky;top:20px;margin-top:0}
+}
+@media (max-width:600px){
+  body{background:linear-gradient(var(--band) 0 170px,var(--bg) 170px);-webkit-tap-highlight-color:transparent}
+  main{padding:20px 12px 32px}
+  h1{font-size:1.75rem;margin:2px 0 18px}
+  .panel{padding:14px;border-radius:14px}
+  .calc>.panel:first-child{padding:16px;border-radius:18px}
+  .field input[type=number]{font-size:1.7rem;padding:10px 40px 10px 14px}
+  .rule{font-size:.9rem;padding:10px 12px}
+  .seg button{font-size:.85rem;padding:12px 6px;min-height:44px}
+  .verdict{padding:18px 16px;border-radius:18px}
+  .verdict .big{font-size:clamp(2.8rem,16vw,3.6rem)}
+  .verdict p{font-size:.95rem}
+  .bar .track{height:18px}
+  caption{font-size:1rem}
+  td{font-size:.93rem;padding:7px 0}
+  td:first-child{padding-right:10px}
+  summary{min-height:48px}
+  .exc-big{font-size:2.1rem}
+  .erog{padding:18px 14px;border-radius:18px}
+  .er-title{font-size:1.45rem;margin-bottom:10px}
+  .er{grid-template-columns:minmax(0,1fr) 108px 40px;gap:8px;padding:11px 0}
+  .er input{font-size:1.1rem;padding:11px 10px;border-radius:10px}
+  .er .amt input{padding-right:26px}
+  .er .amt span{font-size:1rem;right:9px}
+  .er .tag{font-size:.8rem;margin-bottom:5px}
+  .er .del{width:40px;height:40px;font-size:1.2rem}
+  .er-add{padding:13px;font-size:1rem;min-height:48px}
+}
+@media (max-width:360px){
+  .er{grid-template-columns:minmax(0,1fr) 96px 38px;gap:6px}
+  .er input{font-size:1rem;padding:10px 8px}
+  .er .del{width:38px;height:38px}
+}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Premio di produzione: cash o welfare?</h1>
+
+  <div class="layout">
+  <div class="calc">
+
+  <div class="panel">
+    <label for="premio">Premio lordo</label>
+    <div class="field"><input id="premio" type="number" inputmode="decimal" min="0" step="any" placeholder="Inserisci importo"><span>€</span></div>
+    <div class="rule"><strong>Il 15% di extra si calcola solo sulla parte oltre i <span id="soglia-txt">1.000 €</span>.</strong><br><span id="rule-calc"></span></div>
+    <div class="seg" role="group" aria-label="Situazione familiare">
+      <button type="button" data-fig="0" aria-pressed="true">Senza figli a carico</button>
+      <button type="button" data-fig="1" aria-pressed="false">Con figli a carico</button>
+    </div>
+  </div>
+
+  <div id="verdict" class="verdict" aria-live="polite"></div>
+
+  <div class="panel">
+    <div class="bars">
+      <div class="bar"><div class="row"><span>Cash netto</span><span id="v-cash"></span></div><div class="track"><div id="b-cash" class="fill c"></div></div></div>
+      <div class="bar"><div class="row"><span>Welfare</span><span id="v-wel"></span></div><div class="track"><div id="b-wel" class="fill w"></div></div></div>
+    </div>
+  </div>
+
+  <div id="fringe"></div>
+
+  <div class="panel"><table id="t-cash"></table></div>
+  <div class="panel"><table id="t-wel"></table></div>
+
+  <details>
+    <summary>Modifica i parametri</summary>
+    <div class="params">
+      <div><label for="p-soglia">Soglia oltre cui si applica il bonus</label><div class="field"><input id="p-soglia" type="number" inputmode="decimal" step="any" value="1000"><span>€</span></div></div>
+      <div><label for="p-bonus">Percentuale extra welfare</label><div class="field"><input id="p-bonus" type="number" inputmode="decimal" step="any" value="15"><span>%</span></div></div>
+      <div><label for="p-inps">Aliquota INPS dipendente</label><div class="field"><input id="p-inps" type="number" inputmode="decimal" step="any" value="9.19"><span>%</span></div></div>
+      <div><label for="p-imp">Imposta sostitutiva</label><div class="field"><input id="p-imp" type="number" inputmode="decimal" step="any" value="1"><span>%</span></div></div>
+    </div>
+  </details>
+
+  </div>
+
+  <aside class="panel erog" aria-label="Erogazione del premio">
+    <div class="er-title">Versamenti utilizzabili dal:</div>
+    <div id="er-rows"></div>
+    <button type="button" class="er-add" id="er-add">+ Aggiungi rata</button>
+    <datalist id="mesi">
+      <option value="Gennaio"><option value="Febbraio"><option value="Marzo"><option value="Aprile"><option value="Maggio"><option value="Giugno">
+      <option value="Luglio"><option value="Agosto"><option value="Settembre"><option value="Ottobre"><option value="Novembre"><option value="Dicembre">
+    </datalist>
+  </aside>
+  </div>
+
+    <p class="foot">Calcolo indicativo, non è consulenza fiscale. Verifica sempre le condizioni del tuo contratto aziendale.<br><a href="https://www.ccnlmetalmeccanici.it/calcolatori/" target="_blank" rel="noopener">Altri calcolatori CCNL Metalmeccanici &rarr;</a></p>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var eur=new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'});
+  var fig=0;
+  function num(id,def){var v=parseFloat(String($(id).value).replace(',','.'));return isFinite(v)&&v>=0?v:def}
+  function rows(r){return r.map(function(x){return '<tr class="'+(x[2]||'')+'"><td>'+x[0]+'</td><td class="'+(x[3]||'')+'">'+x[1]+'</td></tr>'}).join('')}
+
+  function calc(){
+    var L=num('premio',0), bonusPct=num('p-bonus',15)/100, inpsPct=num('p-inps',9.19)/100, impPct=num('p-imp',1)/100;
+    var inps=L*inpsPct, imponibile=L-inps, imposta=imponibile*impPct, cash=imponibile-imposta;
+    var soglia=num('p-soglia',1000), ecc=Math.max(0,L-soglia), bonus=ecc*bonusPct, wel=L+bonus, diff=wel-cash;
+    $('soglia-txt').textContent=eur.format(soglia);
+    $('rule-calc').textContent=ecc>0?'Eccedenza '+eur.format(ecc)+' × '+(bonusPct*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'% = '+eur.format(bonus)+' di extra.':'Sotto la soglia non c’è nessun extra: aggiungi l’eccedenza per vederlo.';
+
+    var v=$('verdict');
+    if(L<=0){v.className='verdict even';v.innerHTML='<p>Inserisci l’importo del premio per iniziare.</p>'}
+    else if(diff>0.005){v.className='verdict';v.innerHTML='<p>Scegliendo il welfare ricevi in più</p><div class="big">'+eur.format(diff)+'</div><p>'+eur.format(wel)+' di welfare contro '+eur.format(cash)+' netti in busta paga.</p>'}
+    else if(diff<-0.005){v.className='verdict cash';v.innerHTML='<p>Con questi parametri conviene il cash, che ti lascia in più</p><div class="big">'+eur.format(-diff)+'</div><p>'+eur.format(cash)+' netti contro '+eur.format(wel)+' di welfare.</p>'}
+    else{v.className='verdict even';v.innerHTML='<p>Cash e welfare si equivalgono.</p>'}
+
+    var max=Math.max(cash,wel,1);
+    $('b-cash').style.width=(cash/max*100)+'%'; $('b-wel').style.width=(wel/max*100)+'%';
+    $('v-cash').textContent=eur.format(cash); $('v-wel').textContent=eur.format(wel);
+
+    $('t-cash').innerHTML='<caption>Se scegli il cash</caption>'+rows([
+      ['Premio lordo',eur.format(L)],
+      ['Contributi INPS ('+(inpsPct*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'%)','− '+eur.format(inps),'','neg'],
+      ['Imponibile',eur.format(imponibile)],
+      ['Imposta sostitutiva ('+(impPct*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'%)','− '+eur.format(imposta),'','neg'],
+      ['Netto in busta paga',eur.format(cash),'tot']]);
+    $('t-wel').innerHTML='<caption>Se scegli il welfare</caption>'+rows([
+      ['Premio lordo',eur.format(L)],
+      ['Eccedenza oltre '+eur.format(soglia),eur.format(ecc)],
+      ['Extra aziendale ('+(bonusPct*100).toLocaleString('it-IT',{maximumFractionDigits:2})+'% sull’eccedenza)','+ '+eur.format(bonus)],
+      ['Totale welfare',eur.format(wel),'tot']]);
+
+    var limit=fig?2000:1000, f=$('fringe');
+    if(L>0){
+      if(wel>limit){f.innerHTML='<div class="note warn"><div class="exc-label">Eccedenza oltre il limite fringe benefit</div><div class="exc-big">'+eur.format(wel-limit)+'</div>Controllo fringe benefit: il totale welfare ('+eur.format(wel)+') supera il limite di '+eur.format(limit)+'. Verifica come viene trattata questa eccedenza.</div>'}
+      else{f.innerHTML='<div class="note">Controllo fringe benefit: sei entro il limite di '+eur.format(limit)+' ('+(fig?'con':'senza')+' figli a carico).</div>'}
+    } else f.innerHTML='';
+    return {L:L,cash:cash,wel:wel,diff:diff};
+  }
+
+  ['premio','p-soglia','p-bonus','p-inps','p-imp'].forEach(function(id){$(id).addEventListener('input',calc)});
+  document.querySelectorAll('.seg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      fig=+b.dataset.fig;
+      document.querySelectorAll('.seg button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+      calc();
+    });
+  });
+  calc();
+
+  // Erogazione del premio (modificabile)
+  var rate=[
+    {w:'Entro il 1° luglio',a:250,tag:'CCNL'},
+    {w:'Marzo',a:750,tag:''},
+    {w:'Luglio',a:550,tag:''},
+    {w:'Ottobre',a:800,tag:''}
+  ];
+  var box=$('er-rows');
+  function render(){
+    box.innerHTML='';
+    rate.forEach(function(r,i){
+      var row=document.createElement('div');row.className='er';
+      var c1=document.createElement('div');
+      if(r.tag){var t=document.createElement('span');t.className='tag';t.textContent=r.tag;c1.appendChild(t)}
+      var w=document.createElement('input');w.type='text';w.value=r.w;w.setAttribute('list','mesi');
+      w.setAttribute('aria-label','Mese rata '+(i+1));w.placeholder='Mese';
+      w.addEventListener('input',function(){r.w=w.value});
+      c1.appendChild(w);
+      var c2=document.createElement('div');c2.className='amt';
+      var a=document.createElement('input');a.type='number';a.inputMode='decimal';a.min='0';a.step='any';a.value=r.a;
+      a.setAttribute('aria-label','Importo rata '+(i+1));
+      a.addEventListener('input',function(){var v=parseFloat(String(a.value).replace(',','.'));r.a=isFinite(v)?v:0});
+      var e=document.createElement('span');e.textContent='€';
+      c2.appendChild(a);c2.appendChild(e);
+      var d=document.createElement('button');d.type='button';d.className='del';d.textContent='×';
+      d.setAttribute('aria-label','Rimuovi rata '+(i+1));
+      d.addEventListener('click',function(){rate.splice(i,1);render()});
+      row.appendChild(c1);row.appendChild(c2);row.appendChild(d);
+      box.appendChild(row);
+    });
+  }
+  $('er-add').addEventListener('click',function(){
+    rate.push({w:'',a:0,tag:''});render();
+    var ins=box.querySelectorAll('.er input[type=text]');ins[ins.length-1].focus();
+  });
+  render();
+})();
+</script>
+</body>
+</html>
